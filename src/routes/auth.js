@@ -23,14 +23,22 @@ router.get("/google",
 );
 
 router.get("/google/callback",
-  passport.authenticate("google", {
-    session:  false,
-    failureRedirect: `${process.env.CLIENT_URL}/login?error=google_failed`,
-  }),
-  (req, res) => {
-    const token = generateToken(req.user._id);
-    // Redirect to frontend with token in URL
-    res.redirect(`${process.env.CLIENT_URL}/auth/callback?token=${token}`);
+  (req, res, next) => {
+    passport.authenticate("google", {
+      session: false,
+      failureRedirect: `${process.env.CLIENT_URL}/login?error=google_failed`,
+    }, (err, user, info) => {
+      if (err) {
+        console.error("Google OAuth error:", err);
+        return res.redirect(`${process.env.CLIENT_URL}/login?error=google_failed`);
+      }
+      if (!user) {
+        console.error("No user returned:", info);
+        return res.redirect(`${process.env.CLIENT_URL}/login?error=google_failed`);
+      }
+      const token = generateToken(user._id);
+      res.redirect(`${process.env.CLIENT_URL}/auth/callback?token=${token}`);
+    })(req, res, next);
   }
 );
 
