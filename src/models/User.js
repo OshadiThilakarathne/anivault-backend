@@ -5,7 +5,6 @@ const userSchema = new mongoose.Schema(
     username: {
       type:      String,
       required:  true,
-      unique:    true,
       trim:      true,
       minlength: 3,
     },
@@ -17,9 +16,16 @@ const userSchema = new mongoose.Schema(
       trim:      true,
     },
     password: {
-      type:      String,
-      required:  true,
-      minlength: 6,
+      type:     String,
+      required: true,
+    },
+    googleId: {
+      type:   String,
+      unique: true,
+      sparse: true, // allows multiple null values
+    },
+    avatar: {
+      type: String,
     },
   },
   { timestamps: true }

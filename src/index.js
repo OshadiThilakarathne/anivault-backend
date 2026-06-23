@@ -1,29 +1,25 @@
+import "./env.js";
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
+import passport from "./config/passport.js";
 import connectDB from "./db.js";
 import authRoutes from "./routes/auth.js";
 import libraryRoutes from "./routes/library.js";
 
-dotenv.config();
-
 const app = express();
 
-// Middleware
 app.use(cors({
-  origin: ["http://localhost:5173", "https://anivault-ochre.vercel.app"],
+  origin: [process.env.CLIENT_URL, "https://anivault-ochre.vercel.app"],
   credentials: true,
 }));
 app.use(express.json());
+app.use(passport.initialize());
 
-// Connect to MongoDB
 connectDB();
 
-// Routes
-app.use("/api/auth", authRoutes);
+app.use("/api/auth",    authRoutes);
 app.use("/api/library", libraryRoutes);
 
-// Health check
 app.get("/", (req, res) => {
   res.json({ message: "AniVault API is running" });
 });
