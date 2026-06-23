@@ -82,3 +82,22 @@ export const getMe = async (req, res) => {
     avatar:   req.user.avatar || null,
   });
 };
+// PUT /api/auth/profile
+export const updateProfile = async (req, res) => {
+  try {
+    const { avatar } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { avatar },
+      { new: true }
+    );
+    res.json({
+      id:       user._id,
+      username: user.username,
+      email:    user.email,
+      avatar:   user.avatar,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
