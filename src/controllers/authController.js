@@ -79,5 +79,6 @@ export const getMe = async (req, res) => {
     id:       req.user._id,
     username: req.user.username,
     email:    req.user.email,
+    avatar:   req.user.avatar || null,
   });
 };
